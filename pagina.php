@@ -1,9 +1,16 @@
 <?php
 $servername = "localhost";
-$username = "tu_usuario";
-$password = "tu_contraseña";
-$dbname = "tu_base_de_datos";
+$username = "exyton";
+$password = "exyton12345";
+$dbname = "alumnos";
 
+#Solucion al problea de la password
+#use Defuse\Crypto\keyOrPassword;
+
+#function createKey() {
+#    $password = $_ENV["SECRET"]
+#    return KeyOrPassword::createFromPassword($password);
+#}
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
 // Comprobar conexión
@@ -18,8 +25,8 @@ if(isset($_POST['submit'])) {
     $carrera = $_POST['carrera'];
 
     $sql = "INSERT INTO alumnos (nombre, matricula, carrera) VALUES ('$nombre', '$matricula', '$carrera')";
-
-    if ($conn->query($sql) === TRUE) {
+#Error TRUE mayusculas, -> correcciín "true"
+    if ($conn->query($sql) === true) {
         echo "Alumno agregado correctamente";
     } else {
         echo "Error al agregar alumno: " . $conn->error;
@@ -30,7 +37,7 @@ $conn->close();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Agregar Alumno</title>
 </head>
