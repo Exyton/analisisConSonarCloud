@@ -1,18 +1,12 @@
 <?php
 $servername = "localhost";
 $username = "exyton";
-$password = "exyton12345";
+$password = getenv('MYSQL_PASSWORD');
 $dbname = "alumnos";
 
-#Solucion al problea de la password
-#use Defuse\Crypto\keyOrPassword;
-
-#function createKey() {
-#    $password = $_ENV["SECRET"]
-#    return KeyOrPassword::createFromPassword($password);
-#}
 // Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 // Comprobar conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
@@ -24,13 +18,17 @@ if(isset($_POST['submit'])) {
     $matricula = $_POST['matricula'];
     $carrera = $_POST['carrera'];
 
-    $sql = "INSERT INTO alumnos (nombre, matricula, carrera) VALUES ('$nombre', '$matricula', '$carrera')";
-#Error TRUE mayusculas, -> correcciín "true"
-    if ($conn->query($sql) === true) {
-        echo "Alumno agregado correctamente";
+    // Sentencia preparada para evitar inyección SQL
+    $sql = "INSERT INTO alumnos (nombre, matricula, carrera) VALUES (?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sss", $nombre, $matricula, $carrera);
+
+    if ($stmt->execute()) {
+        $mensaje = "Alumno agregado correctamente";
     } else {
-        echo "Error al agregar alumno: " . $conn->error;
+        $mensaje = "Error al agregar alumno: " . $conn->error;
     }
+    $stmt->close();
 }
 
 $conn->close();
@@ -43,6 +41,7 @@ $conn->close();
 </head>
 <body>
     <h2>Agregar Alumno</h2>
+    <?php if(isset($mensaje)) { echo "<p>$mensaje</p>"; } ?>
     <form method="post">
         <label for="nombre">Nombre:</label><br>
         <input type="text" id="nombre" name="nombre" required><br><br>
