@@ -37,7 +37,7 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Agregar Alumno</title>
+    <title>Saludos profe</title>
 </head>
 <body>
     <h2>Agregar Alumno</h2>
